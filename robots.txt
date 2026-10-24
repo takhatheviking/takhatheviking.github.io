@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://takhatheviking.github.io/sitemap.xml
