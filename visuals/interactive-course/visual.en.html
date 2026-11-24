@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Courses with interactive navigation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+:root{--bg:#0B0C0E;--win:#111316;--pl:#1A1C20;--ln:rgba(255,255,255,.09);--ln2:rgba(255,255,255,.06);--fg:#F2F2F0;--dim:#B4B7BD;--cap:#8F9299;--lime:#C6F24E;--blue:#5BC8FF;--amber:#F0B458;--mono:'JetBrains Mono',ui-monospace,monospace}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--fg);font-family:'Inter',system-ui,sans-serif;font-size:14px;line-height:1.4;-webkit-font-smoothing:antialiased}
+.stage{max-width:1040px;margin:0 auto;padding:clamp(12px,3vw,40px)}
+.win{background:var(--win);border:1px solid var(--ln);border-radius:14px;overflow:hidden;box-shadow:0 40px 120px rgba(0,0,0,.5)}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 16px;border-bottom:1px solid var(--ln);font-size:13px}
+.bar b{font-weight:600}
+.state{font-family:var(--mono);font-size:12px;color:var(--cap);display:inline-flex;align-items:center;gap:8px}
+.state i{width:8px;height:8px;border-radius:50%;background:currentColor;display:block}
+.state.ok{color:var(--lime)}.state.run{color:var(--blue)}.state.wip{color:var(--amber)}
+.body{padding:16px;min-height:320px}
+.foot{display:flex;align-items:center;gap:12px;padding:11px 16px;border-top:1px solid var(--ln);font-family:var(--mono);font-size:12px;color:var(--dim);min-height:42px}
+.dots{display:flex;gap:5px;flex:none}
+.dots i{width:14px;height:3px;border-radius:2px;background:rgba(255,255,255,.14);display:block;transition:background .3s}
+.dots i.on{background:var(--lime)}
+.mono{font-family:var(--mono)}
+.lbl{font-family:var(--mono);font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--cap)}
+.dim{color:var(--dim)}.cap{color:var(--cap)}.lime{color:var(--lime)}.blue{color:var(--blue)}.amber{color:var(--amber)}
+.pl{background:var(--pl);border:1px solid var(--ln2);border-radius:10px;padding:12px}
+.chip{display:inline-flex;align-items:center;gap:6px;height:22px;padding:0 9px;border-radius:999px;font-family:var(--mono);font-size:11px;white-space:nowrap;border:1px solid var(--ln);color:var(--dim)}
+.chip.ok{color:var(--lime);border-color:rgba(198,242,78,.35);background:rgba(198,242,78,.08)}
+.chip.run{color:var(--blue);border-color:rgba(91,200,255,.35);background:rgba(91,200,255,.08)}
+.chip.wip{color:var(--amber);border-color:rgba(240,180,88,.35);background:rgba(240,180,88,.08)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:34px;padding:0 14px;border-radius:8px;font-size:13px;font-weight:600;background:rgba(255,255,255,.07);color:var(--fg);border:1px solid var(--ln)}
+.btn.go{background:var(--lime);color:#0B0C0E;border-color:var(--lime)}
+svg.ic{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.row{display:flex;gap:12px}.col{display:flex;flex-direction:column;gap:12px}.wrap{flex-wrap:wrap}.grow{flex:1 1 0;min-width:0}
+/* session: with JS, parts appear step by step; without JS everything is visible */
+.js [data-s]{opacity:0;transform:translateY(8px);transition:opacity .45s ease,transform .45s ease}
+.js [data-s].on{opacity:1;transform:none}
+.js [data-until]{transition:opacity .3s ease}
+.js [data-until].off{display:none}
+@media (prefers-reduced-motion:reduce){.js [data-s],.js [data-until]{transition:none}}
+.ic0{display:flex;flex-direction:column;gap:12px}
+.srcl{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--dim)}
+.icg{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:16px;align-items:start}
+.mapw{border:1px solid var(--ln);border-radius:10px;background:radial-gradient(circle at 70% 20%,rgba(91,200,255,.07),transparent 55%),#0E1013;overflow:hidden}
+.mapw svg{display:block;width:100%;height:auto}
+.rt{fill:none;stroke:var(--cap);stroke-width:2;stroke-dasharray:1 7;stroke-linecap:round}
+.rt.ok{stroke:var(--lime)}.rt.bad{stroke:var(--amber)}
+.stn circle{fill:#111316;stroke:var(--dim);stroke-width:2}
+.stn text{fill:var(--fg);font:500 11px 'JetBrains Mono',monospace;text-anchor:middle;dominant-baseline:central}
+.stn.sel circle{stroke:var(--blue);fill:rgba(91,200,255,.18)}
+.stn.fk circle{stroke:var(--lime)}
+.gate{fill:var(--amber)}
+.tl{fill:var(--cap);font:10px 'JetBrains Mono',monospace}
+.tl.ok{fill:var(--lime)}.tl.bad{fill:var(--amber)}
+.craft{fill:var(--lime)}
+.sc h5{margin:6px 0 10px;font-size:15px;font-weight:600}
+.sc dl{margin:0;display:grid;gap:9px}
+.sc dt{font:11px var(--mono);letter-spacing:.04em;text-transform:uppercase;color:var(--cap)}
+.sc dd{margin:3px 0 0;font-size:13px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.pk{display:flex;align-items:center;gap:10px;font-size:13px}
+@media (max-width:820px){.icg{grid-template-columns:1fr}}
+</style>
+<script>document.documentElement.classList.add('js')</script>
+</head>
+<body>
+<div class="stage">
+<div class="win">
+  <div class="bar"><b>Route course · building a lesson</b><span class="state" id="state"><i></i><span></span></span></div>
+  <div class="body">
+<div class="ic0">
+  <div class="srcl" data-s="1"><svg class="ic" viewBox="0 0 24 24"><path d="M14 3v5h5M6 3h8l5 5v13H6z"/><path d="M9 13h6M9 17h4"/></svg>Source material: Information security rules</div>
+  <div class="icg">
+    <div class="mapw" data-s="2">
+      <svg viewBox="0 0 360 300" role="img" aria-label="Lesson route: stations, a fork, two branches">
+        <path class="rt" d="M40 50 C80 20 100 30 130 40 S190 80 225 60 S300 70 310 110 S290 180 240 170 S180 130 140 160 S90 180 70 220"/>
+        <g data-s="4"><path class="rt ok" d="M70 220 C110 250 130 255 170 250 S250 240 290 250"/><path class="rt bad" d="M70 220 C40 240 40 262 62 274"/><path class="rt bad" d="M82 272 C104 262 100 240 84 228"/>
+          <text class="tl ok" x="170" y="274" text-anchor="middle">takeaway</text><text class="tl ok" x="290" y="274" text-anchor="middle">checklist</text><text class="tl bad" x="72" y="296" text-anchor="middle">review and return</text>
+          <g class="stn fk"><circle cx="170" cy="250" r="11"/><text x="170" y="250">8</text></g><g class="stn fk"><circle cx="290" cy="250" r="11"/><text x="290" y="250">9</text></g>
+          <g class="stn"><circle cx="72" cy="274" r="9" style="stroke:var(--amber)"/></g></g>
+        <g class="stn"><circle cx="40" cy="50" r="12"/><text x="40" y="50">1</text></g>
+        <g class="stn"><circle cx="130" cy="40" r="12"/><text x="130" y="40">2</text></g>
+        <g class="stn"><circle cx="225" cy="60" r="12"/><text x="225" y="60">3</text></g>
+        <g class="stn"><circle cx="310" cy="110" r="12"/><text x="310" y="110">4</text></g>
+        <g class="stn sel"><circle cx="240" cy="170" r="14"/><text x="240" y="170">5</text></g>
+        <g class="stn"><circle cx="140" cy="160" r="12"/><text x="140" y="160">6</text></g>
+        <g class="stn fk"><circle cx="70" cy="220" r="13"/><text x="70" y="220">7</text></g>
+        <g data-s="3"><circle class="gate" cx="141" cy="27" r="4"/><circle class="gate" cx="322" cy="98" r="4"/><circle class="gate" cx="253" cy="157" r="4"/><circle class="gate" cx="151" cy="147" r="4"/><circle class="gate" cx="82" cy="207" r="4"/><circle class="gate" cx="232" cy="20" r="4"/><text class="tl" x="241" y="24">unlock condition</text></g>
+        <g data-s="5"><path class="craft" d="M268 118l14 6-14 6 3-6z" transform="rotate(140 275 124)"/><text class="tl" x="258" y="128" text-anchor="end">object on the route</text></g>
+        <text class="tl" x="18" y="24">start</text><text class="tl" x="92" y="216" data-s="4">choice scenario</text>
+      </svg>
+    </div>
+    <div class="col">
+      <div class="pl sc" data-s="2">
+        <span class="lbl">Station 5</span>
+        <h5>Find the signs of a fake email</h5>
+        <dl>
+          <div><dt>Block type</dt><dd>spotting suspicious parts of an email</dd></div>
+          <div data-s="3"><dt>What unlocks the next station</dt><dd><span class="chip wip">all signs found</span></dd></div>
+        </dl>
+      </div>
+      <div class="pl" data-s="2">
+        <div class="lbl" style="margin-bottom:8px">Block types</div>
+        <div class="chips"><span class="chip">text</span><span class="chip">cards</span><span class="chip">video</span><span class="chip run">hotspots</span><span class="chip">simulator</span><span class="chip">step order</span><span class="chip">choice scenario</span><span class="chip">checklist</span></div>
+      </div>
+      <div class="pl" data-s="5">
+        <div class="lbl" style="margin-bottom:8px">Course world</div>
+        <div class="chips"><span class="chip ok">space</span><span class="chip">metro</span><span class="chip">sea</span><span class="chip">mountains</span><span class="chip">depths</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="pl pk" data-s="6"><svg class="ic lime" viewBox="0 0 24 24"><path d="M12 3 4 7v10l8 4 8-4V7z"/><path d="m4 7 8 4 8-4M12 11v10"/></svg><span>The lesson is packaged for the learning system. <span class="dim">The automated check went through both branches of the fork on phone and computer; the result of every task is sent to the learning system.</span></span></div>
+</div>
+  </div>
+  <div class="foot"><span class="dots" id="dots"></span><span id="cap"></span></div>
+</div>
+</div>
+<script type="application/json" id="session">{"project": "Courses with interactive navigation", "window": "Route course · building a lesson", "status": "five courses on one base", "lang": "en", "steps": [{"n": 1, "caption": "the author takes the learning material", "state": "material", "tone": "run"}, {"n": 2, "caption": "the material is laid out across the stations of a route", "state": "stations", "tone": "run"}, {"n": 3, "caption": "each station has a condition that unlocks the next one", "state": "unlock conditions", "tone": "run"}, {"n": 4, "caption": "the route ends with a choice scenario and a fork", "state": "fork", "tone": "run"}, {"n": 5, "caption": "the course world and the object that travels the route are chosen", "state": "theme", "tone": "run"}, {"n": 6, "caption": "the lesson is packaged for the learning system and checked on phone and computer", "state": "five courses on one base", "tone": "ok"}]}</script>
+<script>
+(function(){
+  var S=JSON.parse(document.getElementById('session').textContent).steps,n=S.length;
+  var dots=document.getElementById('dots'),cap=document.getElementById('cap'),st=document.getElementById('state');
+  for(var i=0;i<n;i++)dots.appendChild(document.createElement('i'));
+  function show(k){ // k = 1..n
+    document.querySelectorAll('[data-s]').forEach(function(e){e.classList.toggle('on',+e.dataset.s<=k)});
+    document.querySelectorAll('[data-until]').forEach(function(e){e.classList.toggle('off',k>=+e.dataset.until)});
+    document.querySelectorAll('[data-at]').forEach(function(e){e.classList.toggle('cur',+e.dataset.at===k)});
+    document.querySelectorAll('[data-done]').forEach(function(e){e.classList.toggle('done',k>=+e.dataset.done)});
+    [].forEach.call(dots.children,function(d,i){d.classList.toggle('on',i<k)});
+    var s=S[k-1];cap.textContent='step '+k+' of '+n+' · '+s.caption;
+    st.className='state '+(s.tone||'');st.lastChild.textContent=s.state;
+  }
+  var still=matchMedia('(prefers-reduced-motion: reduce)').matches||/[?&]static\b/.test(location.search);
+  var m=/[?&]step=(\d+)/.exec(location.search);
+  if(m){show(Math.min(n,Math.max(1,+m[1])));return}
+  if(still){show(n);return}
+  var k=0;(function tick(){k=k%n+1;show(k);setTimeout(tick,k===n?4200:1700)})();
+})();
+</script>
+</body>
+</html>

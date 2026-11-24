@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Korxonalar diagnostikasi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+:root{--bg:#0B0C0E;--win:#111316;--pl:#1A1C20;--ln:rgba(255,255,255,.09);--ln2:rgba(255,255,255,.06);--fg:#F2F2F0;--dim:#B4B7BD;--cap:#8F9299;--lime:#C6F24E;--blue:#5BC8FF;--amber:#F0B458;--mono:'JetBrains Mono',ui-monospace,monospace}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--fg);font-family:'Inter',system-ui,sans-serif;font-size:14px;line-height:1.4;-webkit-font-smoothing:antialiased}
+.stage{max-width:1040px;margin:0 auto;padding:clamp(12px,3vw,40px)}
+.win{background:var(--win);border:1px solid var(--ln);border-radius:14px;overflow:hidden;box-shadow:0 40px 120px rgba(0,0,0,.5)}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 16px;border-bottom:1px solid var(--ln);font-size:13px}
+.bar b{font-weight:600}
+.state{font-family:var(--mono);font-size:12px;color:var(--cap);display:inline-flex;align-items:center;gap:8px}
+.state i{width:8px;height:8px;border-radius:50%;background:currentColor;display:block}
+.state.ok{color:var(--lime)}.state.run{color:var(--blue)}.state.wip{color:var(--amber)}
+.body{padding:16px;min-height:320px}
+.foot{display:flex;align-items:center;gap:12px;padding:11px 16px;border-top:1px solid var(--ln);font-family:var(--mono);font-size:12px;color:var(--dim);min-height:42px}
+.dots{display:flex;gap:5px;flex:none}
+.dots i{width:14px;height:3px;border-radius:2px;background:rgba(255,255,255,.14);display:block;transition:background .3s}
+.dots i.on{background:var(--lime)}
+.mono{font-family:var(--mono)}
+.lbl{font-family:var(--mono);font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--cap)}
+.dim{color:var(--dim)}.cap{color:var(--cap)}.lime{color:var(--lime)}.blue{color:var(--blue)}.amber{color:var(--amber)}
+.pl{background:var(--pl);border:1px solid var(--ln2);border-radius:10px;padding:12px}
+.chip{display:inline-flex;align-items:center;gap:6px;height:22px;padding:0 9px;border-radius:999px;font-family:var(--mono);font-size:11px;white-space:nowrap;border:1px solid var(--ln);color:var(--dim)}
+.chip.ok{color:var(--lime);border-color:rgba(198,242,78,.35);background:rgba(198,242,78,.08)}
+.chip.run{color:var(--blue);border-color:rgba(91,200,255,.35);background:rgba(91,200,255,.08)}
+.chip.wip{color:var(--amber);border-color:rgba(240,180,88,.35);background:rgba(240,180,88,.08)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:34px;padding:0 14px;border-radius:8px;font-size:13px;font-weight:600;background:rgba(255,255,255,.07);color:var(--fg);border:1px solid var(--ln)}
+.btn.go{background:var(--lime);color:#0B0C0E;border-color:var(--lime)}
+svg.ic{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.row{display:flex;gap:12px}.col{display:flex;flex-direction:column;gap:12px}.wrap{flex-wrap:wrap}.grow{flex:1 1 0;min-width:0}
+/* session: with JS, parts appear step by step; without JS everything is visible */
+.js [data-s]{opacity:0;transform:translateY(8px);transition:opacity .45s ease,transform .45s ease}
+.js [data-s].on{opacity:1;transform:none}
+.js [data-until]{transition:opacity .3s ease}
+.js [data-until].off{display:none}
+@media (prefers-reduced-motion:reduce){.js [data-s],.js [data-until]{transition:none}}
+.fd{display:grid;grid-template-columns:170px minmax(0,1fr);gap:16px}
+.rail{display:flex;flex-direction:column;position:relative}
+.st{display:grid;grid-template-columns:20px minmax(0,1fr);gap:10px;padding-bottom:18px;position:relative;font-size:13px;color:var(--cap)}
+.st:before{content:"";position:absolute;left:9px;top:20px;bottom:0;width:2px;background:var(--ln)}
+.st:last-child:before{display:none}
+.st b{width:20px;height:20px;border-radius:50%;border:2px solid var(--ln);display:flex;align-items:center;justify-content:center;font:500 10px var(--mono);background:var(--win);position:relative}
+.st.done{color:var(--fg)}.st.done b{border-color:var(--lime);color:var(--lime)}
+.st.cur b{background:var(--lime);border-color:var(--lime);color:#0B0C0E}
+.st small{display:block;color:var(--cap);font-size:11.5px;line-height:1.3;margin-top:2px}
+.reg{border:1px solid var(--ln);border-radius:10px;overflow:hidden}
+.rh,.rr{display:grid;grid-template-columns:44px minmax(0,1.25fr) minmax(0,1.5fr) 104px minmax(72px,.7fr);gap:10px;align-items:center;padding:11px 12px}
+.rh{background:var(--pl);border-bottom:1px solid var(--ln)}
+.rr{border-bottom:1px solid var(--ln2);font-size:13.5px}
+.rr:last-child{border-bottom:0}
+.rr .f{font:12px var(--mono);color:var(--dim)}
+.rr .sum{text-align:right;font-weight:600;color:var(--lime)}
+.rb{display:block;height:8px;border-radius:4px;background:var(--lime);margin-left:auto}
+.rr.est{color:var(--cap)}.rr.est .sum{color:var(--cap);font-weight:400}
+.rel{display:inline-flex;align-items:center;gap:6px;font:11px var(--mono);white-space:nowrap}
+.rel i{width:8px;height:8px;border-radius:2px;display:block;background:var(--lime)}
+.rel.c i{background:var(--blue)}.rel.n i{background:var(--amber)}
+.tot{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;margin-top:14px}
+.tot span{flex:1 1 260px}
+.tot b{font-size:22px;letter-spacing:-.02em;color:var(--lime)}
+.files{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.file{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;background:var(--pl);border:1px solid var(--ln2);font-size:13px}
+@media (max-width:760px){.fd{grid-template-columns:1fr}.rail{flex-direction:row;flex-wrap:wrap;gap:6px 14px}.st{padding-bottom:0}.st:before{display:none}.st small{display:none}
+.rh{display:none}.rr{grid-template-columns:40px minmax(0,1fr) auto}.rr .f{grid-column:2/4}.rr .rel{grid-column:2}.rr .sum{grid-column:3;grid-row:1}}
+</style>
+<script>document.documentElement.classList.add('js')</script>
+</head>
+<body>
+<div class="stage">
+<div class="win">
+  <div class="bar"><b>Diagnostika · yo‘qotishlar reyestri</b><span class="state" id="state"><i></i><span></span></span></div>
+  <div class="body">
+<div class="fd">
+  <div class="rail">
+    <div class="st" data-done="1" data-at="1"><b>1</b><span>Ma’lumot so‘rovi<small>zavoddan nimani so‘rash</small></span></div>
+    <div class="st" data-done="2" data-at="2"><b>2</b><span>Ma’lumotlarni tekshirish<small>bo‘shliq va ziddiyatlar</small></span></div>
+    <div class="st" data-done="3" data-at="3"><b>3</b><span>Sexdagi kuzatuvlar<small>dala qaydlari tuzilmada</small></span></div>
+    <div class="st" data-done="4" data-at="4"><b>4</b><span>Yo‘qotishlar reyestri<small>yo‘qotishlar pulda</small></span></div>
+    <div class="st" data-done="6" data-at="6"><b>5</b><span>Hisobot va taqdimot<small>rus va o‘zbek tillarida</small></span></div>
+  </div>
+  <div>
+    <div class="reg">
+      <div class="rh lbl"><span>№</span><span>Yo‘qotish</span><span>Hisoblash mantig‘i</span><span>Ishonchlilik</span><span style="text-align:right">Jamidagi ulushi</span></div>
+      <div class="rr" data-s="4"><span class="mono cap">01</span><span>Uskunalarning to‘xtab turishi</span><span class="f">to‘xtash soatlari × soat stavkasi</span><span class="rel"><i></i>o‘lchangan</span><span class="sum"><i class="rb" style="width:86%"></i></span></div>
+      <div class="rr" data-s="4"><span class="mono cap">02</span><span>Brak</span><span class="f">dona × tannarx</span><span class="rel c"><i></i>yozuvlar bo‘yicha</span><span class="sum"><i class="rb" style="width:52%"></i></span></div>
+      <div class="rr" data-s="4"><span class="mono cap">03</span><span>Qayta sozlashlar</span><span class="f">soni × davomiyligi × stavka</span><span class="rel"><i></i>o‘lchangan</span><span class="sum"><i class="rb" style="width:34%"></i></span></div>
+      <div class="rr est" data-s="4"><span class="mono cap">04</span><span>Ortiqcha harakatlar</span><span class="f">og‘zaki baho, yozuvsiz</span><span class="rel n"><i></i>og‘zaki</span><span class="sum">jamiga kirmaydi</span></div>
+    </div>
+    <div class="pl" data-until="4" style="margin-top:12px;color:var(--cap);font:12px var(--mono)">Ma’lumotlar tekshirilib, kuzatuvlar kiritilgach, reyestr to‘ldiriladi.</div>
+    <div class="tot" data-s="5"><span class="dim">Jami — o‘lchangan va yozib olingan ma’lumotlar bo‘yicha. Og‘zaki baholar pulga kiritilmaydi.</span><b>yillik summa</b></div>
+    <div class="files" data-s="6">
+      <span class="file"><svg class="ic" viewBox="0 0 24 24"><path d="M14 3v5h5M6 3h8l5 5v13H6z"/></svg>Hisobot · rus tilida</span>
+      <span class="file"><svg class="ic" viewBox="0 0 24 24"><path d="M14 3v5h5M6 3h8l5 5v13H6z"/></svg>Hisobot · o‘zbek tilida</span>
+      <span class="file"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M12 16v4M8 20h8"/></svg>Taqdimot · ikki tilda</span>
+    </div>
+  </div>
+</div>
+  </div>
+  <div class="foot"><span class="dots" id="dots"></span><span id="cap"></span></div>
+</div>
+</div>
+<script type="application/json" id="session">{"project": "Korxonalar diagnostikasi", "window": "Diagnostika · yo‘qotishlar reyestri", "status": "yangi versiya pilotda", "lang": "uz", "steps": [{"n": 1, "caption": "zavodga ma’lumot so‘rovi yuborildi", "state": "ma’lumot so‘rovi", "tone": "wip"}, {"n": 2, "caption": "olingan ma’lumotlar bo‘shliq va ziddiyatlarga tekshirildi", "state": "ma’lumotlarni tekshirish", "tone": "wip"}, {"n": 3, "caption": "sexdagi kuzatuvlar tuzilmaga kiritildi", "state": "sexdagi kuzatuvlar", "tone": "wip"}, {"n": 4, "caption": "yo‘qotishlar formula va ishonchlilik bilan reyestrga kiritildi", "state": "yo‘qotishlar reyestri", "tone": "wip"}, {"n": 5, "caption": "jami hisoblandi — og‘zaki baholar unga kirmaydi", "state": "yo‘qotishlar pulda", "tone": "wip"}, {"n": 6, "caption": "hisobot va taqdimot ikki tilda tayyorlandi", "state": "hisobot tayyor · pilot", "tone": "wip"}]}</script>
+<script>
+(function(){
+  var S=JSON.parse(document.getElementById('session').textContent).steps,n=S.length;
+  var dots=document.getElementById('dots'),cap=document.getElementById('cap'),st=document.getElementById('state');
+  for(var i=0;i<n;i++)dots.appendChild(document.createElement('i'));
+  function show(k){ // k = 1..n
+    document.querySelectorAll('[data-s]').forEach(function(e){e.classList.toggle('on',+e.dataset.s<=k)});
+    document.querySelectorAll('[data-until]').forEach(function(e){e.classList.toggle('off',k>=+e.dataset.until)});
+    document.querySelectorAll('[data-at]').forEach(function(e){e.classList.toggle('cur',+e.dataset.at===k)});
+    document.querySelectorAll('[data-done]').forEach(function(e){e.classList.toggle('done',k>=+e.dataset.done)});
+    [].forEach.call(dots.children,function(d,i){d.classList.toggle('on',i<k)});
+    var s=S[k-1];cap.textContent=k+'-qadam, jami '+n+' · '+s.caption;
+    st.className='state '+(s.tone||'');st.lastChild.textContent=s.state;
+  }
+  var still=matchMedia('(prefers-reduced-motion: reduce)').matches||/[?&]static\b/.test(location.search);
+  var m=/[?&]step=(\d+)/.exec(location.search);
+  if(m){show(Math.min(n,Math.max(1,+m[1])));return}
+  if(still){show(n);return}
+  var k=0;(function tick(){k=k%n+1;show(k);setTimeout(tick,k===n?4200:1700)})();
+})();
+</script>
+</body>
+</html>

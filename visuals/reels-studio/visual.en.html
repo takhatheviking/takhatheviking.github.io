@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI studio for short videos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+:root{--bg:#0B0C0E;--win:#111316;--pl:#1A1C20;--ln:rgba(255,255,255,.09);--ln2:rgba(255,255,255,.06);--fg:#F2F2F0;--dim:#B4B7BD;--cap:#8F9299;--lime:#C6F24E;--blue:#5BC8FF;--amber:#F0B458;--mono:'JetBrains Mono',ui-monospace,monospace}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--fg);font-family:'Inter',system-ui,sans-serif;font-size:14px;line-height:1.4;-webkit-font-smoothing:antialiased}
+.stage{max-width:1040px;margin:0 auto;padding:clamp(12px,3vw,40px)}
+.win{background:var(--win);border:1px solid var(--ln);border-radius:14px;overflow:hidden;box-shadow:0 40px 120px rgba(0,0,0,.5)}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 16px;border-bottom:1px solid var(--ln);font-size:13px}
+.bar b{font-weight:600}
+.state{font-family:var(--mono);font-size:12px;color:var(--cap);display:inline-flex;align-items:center;gap:8px}
+.state i{width:8px;height:8px;border-radius:50%;background:currentColor;display:block}
+.state.ok{color:var(--lime)}.state.run{color:var(--blue)}.state.wip{color:var(--amber)}
+.body{padding:16px;min-height:320px}
+.foot{display:flex;align-items:center;gap:12px;padding:11px 16px;border-top:1px solid var(--ln);font-family:var(--mono);font-size:12px;color:var(--dim);min-height:42px}
+.dots{display:flex;gap:5px;flex:none}
+.dots i{width:14px;height:3px;border-radius:2px;background:rgba(255,255,255,.14);display:block;transition:background .3s}
+.dots i.on{background:var(--lime)}
+.mono{font-family:var(--mono)}
+.lbl{font-family:var(--mono);font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--cap)}
+.dim{color:var(--dim)}.cap{color:var(--cap)}.lime{color:var(--lime)}.blue{color:var(--blue)}.amber{color:var(--amber)}
+.pl{background:var(--pl);border:1px solid var(--ln2);border-radius:10px;padding:12px}
+.chip{display:inline-flex;align-items:center;gap:6px;height:22px;padding:0 9px;border-radius:999px;font-family:var(--mono);font-size:11px;white-space:nowrap;border:1px solid var(--ln);color:var(--dim)}
+.chip.ok{color:var(--lime);border-color:rgba(198,242,78,.35);background:rgba(198,242,78,.08)}
+.chip.run{color:var(--blue);border-color:rgba(91,200,255,.35);background:rgba(91,200,255,.08)}
+.chip.wip{color:var(--amber);border-color:rgba(240,180,88,.35);background:rgba(240,180,88,.08)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:34px;padding:0 14px;border-radius:8px;font-size:13px;font-weight:600;background:rgba(255,255,255,.07);color:var(--fg);border:1px solid var(--ln)}
+.btn.go{background:var(--lime);color:#0B0C0E;border-color:var(--lime)}
+svg.ic{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.row{display:flex;gap:12px}.col{display:flex;flex-direction:column;gap:12px}.wrap{flex-wrap:wrap}.grow{flex:1 1 0;min-width:0}
+/* session: with JS, parts appear step by step; without JS everything is visible */
+.js [data-s]{opacity:0;transform:translateY(8px);transition:opacity .45s ease,transform .45s ease}
+.js [data-s].on{opacity:1;transform:none}
+.js [data-until]{transition:opacity .3s ease}
+.js [data-until].off{display:none}
+@media (prefers-reduced-motion:reduce){.js [data-s],.js [data-until]{transition:none}}
+.rs{display:grid;grid-template-columns:minmax(0,1fr) 190px;gap:16px;align-items:start}
+.tl{display:flex;flex-direction:column;gap:8px}
+.ruler{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--cap);padding-left:92px}
+.trk{display:grid;grid-template-columns:84px minmax(0,1fr);gap:8px;align-items:center;min-height:46px}
+.trk>.lbl{line-height:1.2}
+.lane2{display:flex;gap:4px;height:46px;background:rgba(255,255,255,.03);border-radius:8px;padding:5px;align-items:stretch;overflow:hidden}
+.clip{flex:1 1 0;min-width:0;border-radius:5px;background:var(--pl);border:1px solid var(--ln2);display:flex;align-items:center;padding:0 8px;font-size:11px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.clip.sc{background:rgba(91,200,255,.1);border-color:rgba(91,200,255,.28);color:var(--blue)}
+.clip.sub{background:rgba(198,242,78,.1);border-color:rgba(198,242,78,.3);color:var(--lime)}
+.wave{display:flex;align-items:center;justify-content:space-between;gap:1px;flex:1 1 0;width:100%;min-width:0;overflow:hidden;padding:0 6px}
+.wave i{display:block;width:3px;flex:none;border-radius:2px;background:var(--fg);opacity:.85}
+.trk.mus .wave i{background:var(--cap)}
+.tag{flex:none;align-self:center;font-family:var(--mono);font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(255,255,255,.08);color:var(--dim);margin-left:4px}
+.phone{aspect-ratio:9/16;border-radius:14px;background:linear-gradient(170deg,#1F2228,#15171A);border:1px solid var(--ln);position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;padding:12px}
+.phone .sceneA{position:absolute;inset:14% 14% 34% 14%;border-radius:10px;border:1px solid var(--ln);background:var(--pl);display:flex;flex-direction:column;gap:6px;padding:10px}
+.phone .sceneA span{height:8px;border-radius:4px;background:rgba(255,255,255,.14)}
+.phone .sceneA span:nth-child(2){width:70%}.phone .sceneA span:nth-child(3){width:45%;background:var(--lime)}
+.capt{position:relative;font-weight:700;font-size:13px;line-height:1.25;text-align:center}
+.capt mark{background:var(--lime);color:#0B0C0E;border-radius:3px;padding:0 3px}
+.gate{margin-top:12px;display:flex;flex-direction:column;gap:8px}
+.gate .btn{width:100%}
+.pub{display:flex;gap:6px;flex-wrap:wrap}
+@media (max-width:720px){.rs{grid-template-columns:1fr}.phone{max-width:200px;margin:0 auto}.trk{grid-template-columns:1fr;gap:4px}.ruler{padding-left:0}}
+</style>
+<script>document.documentElement.classList.add('js')</script>
+</head>
+<body>
+<div class="stage">
+<div class="win">
+  <div class="bar"><b>Video · assembly timeline</b><span class="state" id="state"><i></i><span></span></span></div>
+  <div class="body">
+<div class="rs">
+  <div class="tl">
+    <div class="ruler"><span>start</span><span>middle</span><span>end</span></div>
+    <div class="trk" data-s="1"><span class="lbl">Script</span><div class="lane2"><span class="clip">Hook</span><span class="clip" style="flex:2">Main idea</span><span class="clip" style="flex:1.4">Example</span><span class="clip">Takeaway</span><span class="tag">RU</span><span class="tag">UZ</span></div></div>
+    <div class="trk" data-s="2"><span class="lbl">Author’s voice · RU</span><div class="lane2"><span class="wave"><i style="height:8px"></i><i style="height:20px"></i><i style="height:17px"></i><i style="height:18px"></i><i style="height:10px"></i><i style="height:10px"></i><i style="height:27px"></i><i style="height:9px"></i><i style="height:8px"></i><i style="height:15px"></i><i style="height:19px"></i><i style="height:8px"></i><i style="height:13px"></i><i style="height:17px"></i><i style="height:11px"></i><i style="height:12px"></i><i style="height:21px"></i><i style="height:23px"></i><i style="height:24px"></i><i style="height:10px"></i><i style="height:9px"></i><i style="height:11px"></i><i style="height:8px"></i><i style="height:21px"></i><i style="height:8px"></i><i style="height:10px"></i><i style="height:15px"></i><i style="height:16px"></i><i style="height:12px"></i><i style="height:28px"></i><i style="height:13px"></i><i style="height:30px"></i><i style="height:22px"></i><i style="height:19px"></i><i style="height:30px"></i><i style="height:16px"></i><i style="height:11px"></i><i style="height:11px"></i><i style="height:12px"></i><i style="height:13px"></i><i style="height:18px"></i><i style="height:10px"></i><i style="height:13px"></i><i style="height:14px"></i><i style="height:17px"></i><i style="height:8px"></i><i style="height:15px"></i><i style="height:18px"></i><i style="height:26px"></i><i style="height:19px"></i><i style="height:17px"></i><i style="height:29px"></i><i style="height:27px"></i><i style="height:30px"></i><i style="height:10px"></i><i style="height:13px"></i><i style="height:24px"></i><i style="height:28px"></i><i style="height:18px"></i><i style="height:15px"></i><i style="height:9px"></i><i style="height:14px"></i><i style="height:14px"></i><i style="height:19px"></i><i style="height:8px"></i><i style="height:11px"></i><i style="height:26px"></i><i style="height:30px"></i><i style="height:23px"></i><i style="height:17px"></i></span></div></div>
+    <div class="trk" data-s="2"><span class="lbl">Author’s voice · UZ</span><div class="lane2"><span class="wave"><i style="height:20px"></i><i style="height:11px"></i><i style="height:18px"></i><i style="height:13px"></i><i style="height:21px"></i><i style="height:8px"></i><i style="height:12px"></i><i style="height:19px"></i><i style="height:20px"></i><i style="height:21px"></i><i style="height:15px"></i><i style="height:12px"></i><i style="height:23px"></i><i style="height:17px"></i><i style="height:9px"></i><i style="height:10px"></i><i style="height:30px"></i><i style="height:10px"></i><i style="height:15px"></i><i style="height:19px"></i><i style="height:8px"></i><i style="height:9px"></i><i style="height:11px"></i><i style="height:8px"></i><i style="height:10px"></i><i style="height:15px"></i><i style="height:19px"></i><i style="height:10px"></i><i style="height:26px"></i><i style="height:15px"></i><i style="height:22px"></i><i style="height:9px"></i><i style="height:22px"></i><i style="height:8px"></i><i style="height:15px"></i><i style="height:10px"></i><i style="height:30px"></i><i style="height:8px"></i><i style="height:16px"></i><i style="height:21px"></i><i style="height:10px"></i><i style="height:14px"></i><i style="height:8px"></i><i style="height:11px"></i><i style="height:9px"></i><i style="height:18px"></i><i style="height:13px"></i><i style="height:16px"></i><i style="height:26px"></i><i style="height:13px"></i><i style="height:14px"></i><i style="height:8px"></i><i style="height:17px"></i><i style="height:14px"></i><i style="height:18px"></i><i style="height:9px"></i><i style="height:20px"></i><i style="height:14px"></i><i style="height:9px"></i><i style="height:15px"></i><i style="height:15px"></i><i style="height:12px"></i><i style="height:24px"></i><i style="height:11px"></i><i style="height:13px"></i><i style="height:13px"></i><i style="height:10px"></i><i style="height:10px"></i><i style="height:9px"></i><i style="height:14px"></i></span></div></div>
+    <div class="trk mus" data-s="3"><span class="lbl">Music</span><div class="lane2"><span class="wave"><i style="height:9px"></i><i style="height:9px"></i><i style="height:7px"></i><i style="height:14px"></i><i style="height:4px"></i><i style="height:14px"></i><i style="height:9px"></i><i style="height:4px"></i><i style="height:10px"></i><i style="height:6px"></i><i style="height:5px"></i><i style="height:5px"></i><i style="height:7px"></i><i style="height:4px"></i><i style="height:9px"></i><i style="height:5px"></i><i style="height:7px"></i><i style="height:4px"></i><i style="height:5px"></i><i style="height:14px"></i><i style="height:4px"></i><i style="height:6px"></i><i style="height:4px"></i><i style="height:6px"></i><i style="height:5px"></i><i style="height:5px"></i><i style="height:13px"></i><i style="height:4px"></i><i style="height:4px"></i><i style="height:7px"></i><i style="height:13px"></i><i style="height:5px"></i><i style="height:6px"></i><i style="height:14px"></i><i style="height:10px"></i><i style="height:5px"></i><i style="height:7px"></i><i style="height:14px"></i><i style="height:8px"></i><i style="height:14px"></i><i style="height:7px"></i><i style="height:6px"></i><i style="height:5px"></i><i style="height:6px"></i><i style="height:5px"></i><i style="height:5px"></i><i style="height:6px"></i><i style="height:10px"></i><i style="height:11px"></i><i style="height:4px"></i><i style="height:6px"></i><i style="height:7px"></i><i style="height:6px"></i><i style="height:8px"></i><i style="height:6px"></i><i style="height:8px"></i><i style="height:4px"></i><i style="height:5px"></i><i style="height:5px"></i><i style="height:4px"></i><i style="height:4px"></i><i style="height:13px"></i><i style="height:12px"></i><i style="height:4px"></i><i style="height:8px"></i><i style="height:8px"></i><i style="height:5px"></i><i style="height:4px"></i><i style="height:8px"></i><i style="height:14px"></i></span></div></div>
+    <div class="trk" data-s="4"><span class="lbl">Scenes</span><div class="lane2"><span class="clip sc">Scene 1</span><span class="clip sc" style="flex:2">Scene 2</span><span class="clip sc" style="flex:1.4">Scene 3</span><span class="clip sc">Scene 4</span></div></div>
+    <div class="trk" data-s="4"><span class="lbl">Subtitles</span><div class="lane2"><span class="clip sub" style="flex:.8">phrase</span><span class="clip sub" style="flex:1.2">phrase</span><span class="clip sub">phrase</span><span class="clip sub" style="flex:1.5">phrase</span><span class="clip sub">phrase</span><span class="clip sub" style="flex:.7">phrase</span></div></div>
+  </div>
+  <div>
+    <div class="phone" data-s="4">
+      <div class="sceneA"><span></span><span></span><span></span></div>
+      <div class="capt">assembled <mark>no filming</mark></div>
+    </div>
+    <div class="gate">
+      <div class="pl" data-s="5" style="padding:10px">
+        <div class="lbl">Publishing</div>
+        <div class="dim" style="font-size:13px;margin:6px 0 10px" data-until="6">The video is ready. It goes out only after the author approves.</div>
+        <span class="btn go" data-until="6">Approve</span>
+        <div class="pub" data-s="6"><span class="chip ok">published</span><span class="chip">video platform</span><span class="chip">messenger channel</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+  </div>
+  <div class="foot"><span class="dots" id="dots"></span><span id="cap"></span></div>
+</div>
+</div>
+<script type="application/json" id="session">{"project": "AI studio for short videos", "window": "Video · assembly timeline", "status": "result", "lang": "en", "steps": [{"n": 1, "caption": "script in Russian and Uzbek", "state": "script", "tone": "run"}, {"n": 2, "caption": "the system voices the script in the author’s voice", "state": "voice-over", "tone": "run"}, {"n": 3, "caption": "background music is generated", "state": "music", "tone": "run"}, {"n": 4, "caption": "the video is assembled from scenes with subtitles", "state": "assembly", "tone": "run"}, {"n": 5, "caption": "the video awaits the author’s approval", "state": "awaiting approval", "tone": "wip"}, {"n": 6, "caption": "the author approved — the video is published", "state": "published", "tone": "ok"}]}</script>
+<script>
+(function(){
+  var S=JSON.parse(document.getElementById('session').textContent).steps,n=S.length;
+  var dots=document.getElementById('dots'),cap=document.getElementById('cap'),st=document.getElementById('state');
+  for(var i=0;i<n;i++)dots.appendChild(document.createElement('i'));
+  function show(k){ // k = 1..n
+    document.querySelectorAll('[data-s]').forEach(function(e){e.classList.toggle('on',+e.dataset.s<=k)});
+    document.querySelectorAll('[data-until]').forEach(function(e){e.classList.toggle('off',k>=+e.dataset.until)});
+    document.querySelectorAll('[data-at]').forEach(function(e){e.classList.toggle('cur',+e.dataset.at===k)});
+    document.querySelectorAll('[data-done]').forEach(function(e){e.classList.toggle('done',k>=+e.dataset.done)});
+    [].forEach.call(dots.children,function(d,i){d.classList.toggle('on',i<k)});
+    var s=S[k-1];cap.textContent='step '+k+' of '+n+' · '+s.caption;
+    st.className='state '+(s.tone||'');st.lastChild.textContent=s.state;
+  }
+  var still=matchMedia('(prefers-reduced-motion: reduce)').matches||/[?&]static\b/.test(location.search);
+  var m=/[?&]step=(\d+)/.exec(location.search);
+  if(m){show(Math.min(n,Math.max(1,+m[1])));return}
+  if(still){show(n);return}
+  var k=0;(function tick(){k=k%n+1;show(k);setTimeout(tick,k===n?4200:1700)})();
+})();
+</script>
+</body>
+</html>
