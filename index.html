@@ -184,7 +184,7 @@ h2{margin:0;font-size:clamp(26px,3.2vw,40px);line-height:1.08;font-weight:600;le
 .links a:hover{color:var(--fg)}
 .links span{font-family:var(--mono);font-size:12px;color:var(--cap)}
 .foot{padding:20px 0 36px;font-family:var(--mono);font-size:12px;color:var(--cap)}
-@media (max-width:720px){.nav{flex-wrap:nowrap;gap:8px;padding:10px 0}.nav-r{flex-wrap:nowrap;gap:8px}.lang button{min-width:30px;height:40px;padding:0 5px}.nav .pill{height:44px;padding:0 10px;font-size:14px;white-space:nowrap}.nav-l{display:none}#projects .pm-nav{display:none}}
+@media (max-width:720px){.nav{flex-wrap:nowrap;gap:8px;padding:10px 0}.nav-r{flex-wrap:nowrap;gap:8px}.lang button{min-width:30px;height:40px;padding:0 5px}.nav .pill{height:44px;padding:0 10px;font-size:14px;white-space:nowrap}.nav-l{display:none}#projects .pm-nav{display:none}#projects .pm{align-items:flex-start;min-height:118px}}
 @media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}html{scroll-behavior:auto}}
 </style>
 </head>
@@ -447,7 +447,10 @@ track.innerHTML=P.map(function(p){return '<div class="slide"><iframe title="'+es
 var frames=track.querySelectorAll('iframe');
 /* одна рамка для всех проектов: содержимое окна вписывается масштабом */
 var CSSFX='html.ms .stage,html.fx .stage{max-width:none;padding:0;margin:0}html.fx,html.fx body,html.fx .stage{height:100%}html.fx body{overflow:hidden}html.fx .win{height:100%;display:flex;flex-direction:column;box-shadow:none;position:relative}html.fx .win>*{flex:none}html.fx .win>.body{flex:1 1 auto;min-height:0;overflow:hidden}html.fx .win.cut::after{content:"";position:absolute;left:1px;right:1px;bottom:var(--fh,42px);height:72px;background:linear-gradient(180deg,rgba(17,19,22,0),#111316);pointer-events:none}';
-function boxWH(){var w=vp.clientWidth;return [w,w<700?640:Math.round(w*.56)]}
+/* на телефоне окно целиком помещается на экран под шапкой; высота считается один раз на ширину */
+var phH=0,phW=0;
+function boxWH(){var w=vp.clientWidth;if(w>=700)return [w,Math.round(w*.56)];
+  if(w!==phW){phW=w;phH=Math.max(500,Math.min(640,window.innerHeight-86))}return [w,phH]}
 function setH(){vp.style.height=boxWH()[1]+'px'}
 function fit(i){
   try{var f=frames[i],d=f.contentDocument;if(!d||!d.body)return;var win=d.querySelector('.win');if(!win)return;
@@ -455,11 +458,11 @@ function fit(i){
     if(!d.getElementById('fx')){var st=d.createElement('style');st.id='fx';st.textContent=CSSFX;d.head.appendChild(st);r.style.background='transparent';d.body.style.background='transparent'}
     r.classList.remove('fx');r.classList.add('ms');win.classList.remove('cut');
     var lo=W<700?Math.round(W/.92):880,hi=W<700?Math.round(W/.62):1700,L=lo,ok=false,bd=d.querySelector('.win>.body'),nh=0;if(bd)bd.style.paddingTop=bd.style.paddingLeft=bd.style.paddingRight='';
-    for(;L<=hi;L+=20){f.style.width=L+'px';nh=win.offsetHeight;if(nh<=H*L/W){ok=true;break}}
+    for(;L<=hi;L+=20){f.style.width=L+'px';void f.offsetWidth;nh=win.offsetHeight;if(nh<=H*L/W){ok=true;break}}
     if(!ok){
       /* содержимое, которое растёт вместе с шириной, сужается полями */
       var Ls=W<700?[hi]:[1040,1200,1400,1700],p0=bd?parseFloat(d.defaultView.getComputedStyle(bd).paddingLeft):0,k,pp;
-      for(k=0;k<Ls.length&&!ok&&bd;k++){L=Ls[k];f.style.width=L+'px';
+      for(k=0;k<Ls.length&&!ok&&bd;k++){L=Ls[k];f.style.width=L+'px';void f.offsetWidth;
         for(pp=10;pp<L*.2;pp+=10){bd.style.paddingLeft=bd.style.paddingRight=(p0+pp)+'px';nh=win.offsetHeight;if(nh<=H*L/W){ok=true;break}}
         if(!ok)bd.style.paddingLeft=bd.style.paddingRight=''}
       if(!ok){L=hi;f.style.width=L+'px'}}
