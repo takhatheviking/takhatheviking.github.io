@@ -205,6 +205,19 @@ h2{margin:0;font-size:clamp(26px,3.2vw,40px);line-height:1.08;font-weight:600;le
 @media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}html{scroll-behavior:auto}}
 .sec-a:empty{display:none}
 </style>
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-9L5D0DJ8JV"></script>
+<script>
+window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}
+gtag('js',new Date());gtag('config','G-9L5D0DJ8JV');
+/* нажатия: кнопки «обсудить / связаться» и переходы в мессенджеры и соцсети */
+document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a');if(!a)return;
+  var h=a.getAttribute('href')||'',sec=a.closest('section,header'),place=sec?(sec.id||sec.className||'nav'):'nav';
+  if(h==='#contact')gtag('event','cta_click',{place:place});
+  else if(/^https?:\/\/(t\.me|www\.linkedin\.com|instagram\.com)/.test(h))gtag('event','contact_click',{place:place,channel:h.split('/')[2]});
+  else if(a.classList.contains('more'))gtag('event','examples_click',{place:place});
+},true);
+</script>
 </head>
 <body>
 <div class="page" id="page">
