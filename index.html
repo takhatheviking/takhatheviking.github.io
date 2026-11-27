@@ -71,27 +71,44 @@ button{font:inherit;cursor:pointer;color:inherit}
 .pill.go{background:var(--lime);color:var(--bg);height:48px}
 .pill.ghost{border-color:rgba(255,255,255,.22);height:48px}
 /* hero */
-.hero{padding:clamp(24px,4vw,44px) 0 28px;display:flex;flex-direction:column;gap:16px}
-.h-name{display:block;margin:0 0 14px;font-size:clamp(16px,1.5vw,20px);line-height:1.3;font-weight:500;letter-spacing:0;color:var(--dim)}
+.hero{padding:clamp(36px,7vw,96px) 0 clamp(40px,6vw,80px);display:flex;flex-direction:column;align-items:flex-start;gap:0}
+.h-name{display:block;margin:0 0 18px;font-family:var(--mono);font-size:13px;line-height:1.3;font-weight:500;letter-spacing:.02em;color:var(--cap)}
 .hero-b{display:flex;align-items:flex-end;justify-content:space-between;gap:16px 40px;flex-wrap:wrap}
 .badge{font-family:var(--mono);font-size:13px;color:var(--lime)}
-h1{white-space:pre-line;margin:0;max-width:1000px;font-size:clamp(30px,4.2vw,52px);line-height:1.05;font-weight:600;letter-spacing:-.035em}
-.lead{margin:0;flex:1 1 420px;max-width:600px;font-size:clamp(15px,1.4vw,17px);color:var(--dim)}
-.cta{display:flex;gap:10px;flex-wrap:wrap}
+h1{white-space:pre-line;margin:0;max-width:920px;font-size:clamp(34px,5.6vw,72px);line-height:1.03;font-weight:600;letter-spacing:-.04em;text-wrap:balance}
+.lead{margin:22px 0 0;max-width:640px;font-size:clamp(17px,1.7vw,21px);line-height:1.45;color:var(--dim)}
+.cta{display:flex;align-items:center;gap:10px 26px;flex-wrap:wrap;margin-top:32px}
+.hero .pill.go{height:54px;padding:0 28px;font-size:16px}
+.more{display:inline-flex;align-items:center;gap:8px;min-height:44px;color:var(--dim);font-size:15px;text-decoration:none}
+.more:hover{color:var(--fg)}
+.more svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.ex{font-family:var(--mono);font-size:13px;letter-spacing:.02em;color:var(--cap);padding:0 2px 8px}
 /* project stage */
 .pm{display:flex;align-items:flex-end;justify-content:space-between;gap:12px 32px;flex-wrap:wrap;padding-top:14px}
 #projects h2{font-size:clamp(22px,2.4vw,30px)}
 #projects .pm-l p{font-size:16px}
-#projects{display:flex;flex-direction:column}
-#projects .tabs{order:-1;margin:0;padding:6px 2px 2px;-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 56px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 56px),transparent)}
-#projects .pm{align-items:center;padding:10px 2px 14px;flex-wrap:nowrap}
-#projects .pm-l{flex:1 1 auto;flex-direction:row;align-items:baseline;gap:6px 14px;flex-wrap:wrap}
-#projects .pm-meta{flex:none}
-#projects #pcat{display:none}
-#projects #ptitle{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
-#projects .pm-l p{flex:1 1 320px;max-width:none;font-size:15px}
+#projects{display:flex;flex-direction:column;padding-top:clamp(64px,9vw,120px)}
+.hero+.sec{padding-top:0}
+#projects .tabs{margin:0;padding:6px 2px 2px;-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 56px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 56px),transparent)}
+#projects .pm{flex-direction:column;flex-wrap:nowrap;align-items:stretch;justify-content:space-between;gap:20px;padding:14px 2px 16px}
+#projects .pm-l{flex:none;gap:14px}
+#projects h2{font-size:clamp(22px,2vw,28px);line-height:1.12}
+.pd b{display:block;margin-bottom:4px;font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:.02em;color:var(--cap)}
+#projects .pd p{max-width:none;font-size:15px;line-height:1.45;color:var(--dim)}
+#projects .pd:last-child p{color:var(--fg)}
 #projects .pm-nav{flex:none}
 #projects .arr{width:38px;height:38px}
+@media (min-width:1000px){
+.pj{display:grid;grid-template-columns:minmax(0,300px) minmax(0,1fr);gap:24px;margin:14px 0 0}
+.pj .vp{width:auto;margin:0}
+#projects .pm{padding:4px 0 0}
+}
+@media (max-width:720px){
+#projects #ptitle{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+#projects .pd-t,#projects .pd b{display:none}
+#projects .pm{min-height:146px;justify-content:flex-start;padding:12px 2px 12px}
+#projects .pm-l{gap:8px}
+}
 .pm-l{flex:1 1 420px;min-width:0;display:flex;flex-direction:column;gap:10px;transition:opacity .25s}
 .pm-l.sw{opacity:0}
 .pm-meta{display:flex;gap:8px 16px;flex-wrap:wrap;font-family:var(--mono);font-size:13px;color:var(--cap)}
@@ -184,8 +201,9 @@ h2{margin:0;font-size:clamp(26px,3.2vw,40px);line-height:1.08;font-weight:600;le
 .links a:hover{color:var(--fg)}
 .links span{font-family:var(--mono);font-size:12px;color:var(--cap)}
 .foot{padding:20px 0 36px;font-family:var(--mono);font-size:12px;color:var(--cap)}
-@media (max-width:720px){.nav{flex-wrap:nowrap;gap:8px;padding:10px 0}.nav-r{flex-wrap:nowrap;gap:8px}.lang button{min-width:30px;height:40px;padding:0 5px}.nav .pill{height:44px;padding:0 10px;font-size:14px;white-space:nowrap}.nav-l{display:none}#projects .pm-nav{display:none}#projects .pm{align-items:flex-start;min-height:118px}}
+@media (max-width:720px){.nav{flex-wrap:nowrap;gap:8px;padding:10px 0}.nav-r{flex-wrap:nowrap;gap:8px}.lang button{min-width:30px;height:40px;padding:0 5px}.nav .pill{height:44px;padding:0 10px;font-size:14px;white-space:nowrap}.nav-l{display:none}#projects .pm-nav{display:none}}
 @media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}html{scroll-behavior:auto}}
+.sec-a:empty{display:none}
 </style>
 </head>
 <body>
@@ -206,40 +224,42 @@ h2{margin:0;font-size:clamp(26px,3.2vw,40px);line-height:1.08;font-weight:600;le
 
   <section class="hero" id="top">
     <h1 data-t="h1"></h1>
-    <div class="hero-b">
-      <p class="lead" data-t="lead"></p>
-      <div class="cta">
-        <a class="pill go" href="#contact" data-t="b1"></a>
-        <a class="pill ghost" href="#services" data-t="b2"></a>
-      </div>
+    <p class="lead" data-t="lead"></p>
+    <div class="cta">
+      <a class="pill go" href="#contact" data-t="b1"></a>
+      <a class="more" href="#projects"><span data-t="b2"></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg></a>
     </div>
-  </section>
-
-  <section id="projects" aria-roledescription="carousel">
-    <div class="pm">
-      <div class="pm-l" id="pml" aria-live="polite">
-        <div class="pm-meta"><span id="pcat"></span><span class="st" id="pst"><i></i><span></span></span></div>
-        <h2 id="ptitle"></h2>
-        <p id="pben"></p>
-      </div>
-      <div class="pm-nav">
-        <span id="pnum"></span>
-        <span style="display:flex;gap:8px">
-          <button class="arr" type="button" id="prev"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 6l-6 6 6 6"/></svg></button>
-          <button class="arr" type="button" id="next"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 6l6 6-6 6"/></svg></button>
-        </span>
-      </div>
-    </div>
-    <div class="tabs" id="tabs" role="tablist"></div>
-    <div class="vp" id="vp">
-      <div class="clip"><div class="track" id="track"></div></div>
-    </div>
-    <p class="note" data-t="note"></p>
   </section>
 
   <section class="sec" id="services">
     <div class="sec-h"><div class="sec-b" data-t="sb1"></div><h2 data-t="st1"></h2><p class="sec-a" data-t="sa1"></p></div>
     <div class="grid" id="svc"></div>
+  </section>
+
+  <section id="projects" aria-roledescription="carousel">
+    <div class="ex" data-t="ex"></div>
+    <div class="tabs" id="tabs" role="tablist"></div>
+    <div class="pj">
+      <div class="pm">
+        <div class="pm-l" id="pml" aria-live="polite">
+          <span class="st" id="pst"><i></i><span></span></span>
+          <h2 id="ptitle"></h2>
+          <div class="pd pd-t"><b data-t="lt"></b><p id="ptask"></p></div>
+          <div class="pd"><b data-t="ls"></b><p id="psol"></p></div>
+        </div>
+        <div class="pm-nav">
+          <span id="pnum"></span>
+          <span style="display:flex;gap:8px">
+            <button class="arr" type="button" id="prev"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 6l-6 6 6 6"/></svg></button>
+            <button class="arr" type="button" id="next"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 6l6 6-6 6"/></svg></button>
+          </span>
+        </div>
+      </div>
+      <div class="vp" id="vp">
+        <div class="clip"><div class="track" id="track"></div></div>
+      </div>
+    </div>
+    <p class="note" data-t="note"></p>
   </section>
 
   <section class="sec" id="process">
@@ -287,13 +307,14 @@ var P=[
  ['autoposter',5,533,3,'live',{ru:['Автопостер для Telegram','Публикует посты из контент-плана в назначенное время и отмечает статус в таблице.'],uz:['Telegram uchun avtoposter','Kontent-rejadagi postlarni belgilangan vaqtda chiqaradi va holatini jadvalda belgilaydi.'],en:['Scheduled posting for Telegram','Publishes posts from the content plan on time and marks the status in the table.']}],
  ['personal-assistant',5,558,3,'live',{ru:['Личный ИИ-ассистент','Хранит разобранные инструменты и прошлые решения и подсказывает их в начале новой задачи.'],uz:['Shaxsiy AI yordamchi','O‘rganilgan vositalar va avvalgi qarorlarni saqlaydi, yangi vazifa boshida ularni tavsiya qiladi.'],en:['Personal AI assistant','Keeps reviewed tools and past decisions and suggests them at the start of a new task.']}]
 ];
+var D={"research":{"ru":["Перед каждым новым курсом методист 2–3 дня искал источники и изучал аудиторию.","Программа сама находит источники, выбирает идеи и описывает аудиторию — за 20–30 минут. Методист проверяет готовый результат."],"uz":["Har bir yangi kurs oldidan metodist 2–3 kun manba qidirar va auditoriyani o‘rganar edi.","Dastur manbalarni o‘zi topadi, g‘oyalarni tanlaydi va auditoriyani tavsiflaydi — 20–30 daqiqada. Metodist tayyor natijani tekshiradi."],"en":["Before every new course, a course designer spent 2–3 days finding sources and studying the audience.","The program finds sources, picks out ideas and describes the audience in 20–30 minutes. The designer checks the finished result."]},"factory-diagnostics":{"ru":["Консультанты записывали потери на производстве и сводили их в отчёт вручную.","Программа проверяет данные завода, считает каждую потерю в деньгах и собирает отчёт на двух языках. Сейчас идёт пилот."],"uz":["Maslahatchilar ishlab chiqarishdagi yo‘qotishlarni yozib olar va hisobotni qo‘lda tuzar edi.","Dastur zavod ma’lumotlarini tekshiradi, har bir yo‘qotishni pulda hisoblaydi va ikki tilda hisobot tayyorlaydi. Hozir sinovdan o‘tmoqda."],"en":["Consultants wrote down losses on the shop floor and put the report together by hand.","The program checks the plant’s data, puts a money figure on every loss and builds the report in two languages. A pilot is under way."]},"voice-journal":{"ru":["Сотрудники вели журнал обращений клиентов в таблице вручную.","Сотрудник диктует обращение голосом, бот записывает его в журнал и напоминает о сроке. Работает на русском и узбекском."],"uz":["Xodimlar mijozlar murojaatlari jurnalini jadvalda qo‘lda yuritar edi.","Xodim murojaatni ovoz bilan aytadi, bot uni jurnalga yozadi va muddatni eslatadi. Rus va o‘zbek tillarida ishlaydi."],"en":["Staff kept the log of client requests in a spreadsheet by hand.","An employee dictates the request, the bot writes it into the log and reminds about the deadline. Works in Russian and Uzbek."]},"event-tickets":{"ru":["Билеты на мероприятие нужно продать и проверить на входе без кассира и таблиц.","Бот показывает афишу, бронирует место и принимает оплату. На входе билет проверяют по QR-коду."],"uz":["Tadbir chiptalarini kassirsiz va jadvallarsiz sotish hamda kirishda tekshirish kerak.","Bot afishani ko‘rsatadi, joyni band qiladi va to‘lovni qabul qiladi. Kirishda chipta QR-kod orqali tekshiriladi."],"en":["Event tickets have to be sold and checked at the door without a cashier or spreadsheets.","The bot shows the programme, books a seat and takes payment. At the door the ticket is checked by QR code."]},"interactive-course":{"ru":["Электронный урок обычно выглядит как длинная страница: её можно пролистать, не выполнив ни одного задания.","Урок собран как маршрут: следующий шаг открывается только после выполненного задания. Собрано пять демонстрационных уроков."],"uz":["Elektron dars odatda uzun sahifaga o‘xshaydi: uni birorta topshiriqni bajarmasdan varaqlab o‘tish mumkin.","Dars marshrut kabi tuzilgan: keyingi qadam faqat topshiriq bajarilgandan keyin ochiladi. Beshta namunaviy dars tayyorlangan."],"en":["An online lesson usually looks like one long page: you can scroll through it without doing a single task.","The lesson is built as a route: the next step opens only after the task is done. Five demo lessons have been built."]},"course-production":{"ru":["Студия из 20 человек теряла качество курсов на стыках отделов.","Введён учёт задач по этапам, перевод идёт пакетами, курс собирается без ручных операций. Крупный заказ выполнен за 3 месяца вместо 8."],"uz":["20 kishilik studiyada bo‘limlar o‘rtasida kurslar sifati yo‘qolar edi.","Vazifalar bosqichlar bo‘yicha hisobga olinadi, tarjima paketlab bajariladi, kurs qo‘l mehnatisiz yig‘iladi. Yirik buyurtma 8 oy o‘rniga 3 oyda bajarildi."],"en":["A studio of 20 people was losing course quality at the hand-offs between departments.","Tasks are tracked by stage, translation runs in batches, and a course is assembled with no manual steps. A large order was delivered in 3 months instead of 8."]},"reels-studio":{"ru":["Для каждого короткого ролика нужны съёмка, студия и монтажёр.","Программа озвучивает сценарий голосом автора, добавляет музыку и субтитры и собирает видео. Ролик выходит после подтверждения автора."],"uz":["Har bir qisqa video uchun suratga olish, studiya va montajchi kerak.","Dastur ssenariyni muallif ovozi bilan o‘qiydi, musiqa va subtitr qo‘shadi hamda videoni yig‘adi. Video muallif tasdiqlagandan keyin chiqadi."],"en":["Every short video needs filming, a studio and an editor.","The program voices the script in the author’s voice, adds music and subtitles and puts the video together. It is published once the author confirms."]},"methodology-product":{"ru":["Консультанты проверяли бизнес-модель каждого клиента вручную.","Их методика стала программой, которая проводит ту же проверку. Агентство выпустило на её основе продукт для своих клиентов."],"uz":["Maslahatchilar har bir mijozning biznes-modelini qo‘lda tekshirar edi.","Ularning metodikasi shu tekshiruvni bajaradigan dasturga aylandi. Agentlik uning asosida o‘z mijozlari uchun mahsulot chiqardi."],"en":["Consultants reviewed each client’s business model by hand.","Their method became a program that runs the same review. The agency released a product for its clients based on it."]},"finance-reporting":{"ru":["Отчётность компании нужно перевести из национального стандарта в международный.","Программа делает перевод и для каждой цифры показывает исходный документ. Сейчас в разработке."],"uz":["Kompaniya hisobotini milliy standartdan xalqaro standartga o‘tkazish kerak.","Dastur hisobotni o‘tkazadi va har bir raqam uchun dastlabki hujjatni ko‘rsatadi. Hozir ishlab chiqilmoqda."],"en":["A company’s statements have to be converted from the national standard to the international one.","The program does the conversion and shows the source document behind every figure. In development."]},"category-management":{"ru":["В списке товаров торговой компании накопились повторы и товары в случайных группах.","Программа предлагает категории, находит повторы и раскладывает товары по группам. Спорные случаи проверяет сотрудник."],"uz":["Savdo kompaniyasining tovarlar ro‘yxatida takrorlar va tasodifiy guruhlarga tushgan tovarlar yig‘ilib qolgan.","Dastur kategoriyalarni taklif qiladi, takrorlarni topadi va tovarlarni guruhlarga ajratadi. Shubhali holatlarni xodim tekshiradi."],"en":["A trading company’s product list had built up duplicates and items in random groups.","The program suggests categories, finds duplicates and sorts items into groups. An employee checks the doubtful cases."]},"autoposter":{"ru":["Чтобы посты в канале выходили вовремя, нужен был дежурный сотрудник.","Бот берёт посты из таблицы с планом, публикует их в назначенное время и отмечает статус."],"uz":["Kanaldagi postlar o‘z vaqtida chiqishi uchun navbatchi xodim kerak edi.","Bot postlarni reja jadvalidan oladi, belgilangan vaqtda chiqaradi va holatini belgilaydi."],"en":["Getting channel posts out on time needed someone on duty.","The bot takes posts from the plan spreadsheet, publishes them at the set time and marks the status."]},"personal-assistant":{"ru":["Разобранные инструменты и прошлые решения терялись в заметках.","Ассистент хранит их и подсказывает подходящие в начале новой задачи."],"uz":["O‘rganilgan vositalar va avvalgi qarorlar qaydlar orasida yo‘qolib ketar edi.","Yordamchi ularni saqlaydi va yangi vazifa boshida mosini tavsiya qiladi."],"en":["Reviewed tools and past decisions were getting lost in notes.","The assistant keeps them and suggests the right ones at the start of a new task."]}};
 var T={
-ru:{nav:['Проекты','Услуги','Порядок работы','Продукты','Связь'],navcta:'Связаться',
- badge:'AI Engineer & Systems Architect · Ташкент',h1:'Тохиржон Ирисбоев\nПроектирую и внедряю ИИ-системы для бизнеса',
- lead:'Автоматизация процессов, боты, агенты, обучение. Двенадцать систем показаны ниже в работе.',
- b1:'Обсудить проект',b2:'Услуги и цены',note:'',prev:'Предыдущий проект',next:'Следующий проект',
- sb1:'услуги',st1:'Перевожу ручные процессы и экспертизу на ИИ с проверяемым результатом',
- sa1:'Результат для бизнеса: работы выполняются быстрее, качество не зависит от конкретного исполнителя, а каждый результат прослеживается от исходных данных до подтверждения.',
+ru:{nav:['Услуги','Проекты','Порядок работы','Продукты','Связь'],navcta:'Связаться',
+ badge:'AI Engineer & Systems Architect · Ташкент',h1:'Тохиржон Ирисбоев · Viking Labs\nАвтоматизирую рутину вашего бизнеса с помощью ИИ',
+ lead:'Обращения клиентов, отчёты, документы, обучение сотрудников.',ex:'Примеры работ',lt:'Задача',ls:'Решение',
+ b1:'Обсудить задачу',b2:'Смотреть примеры',note:'',prev:'Предыдущий проект',next:'Следующий проект',
+ sb1:'услуги',st1:'Чем могу помочь',
+ sa1:'',
  svc:[['Автоматизация процессов','Изучаю действующий процесс и перевожу повторяющиеся операции на ИИ. Решения принимают сотрудники, рутину выполняет система.'],
   ['Оптимизация работы','Ускоряю существующий процесс без его перестройки: нахожу, где теряется время, и подбираю инструменты под задачи команды.'],
   ['Агенты и агентные системы','Разрабатываю агентов под прикладные задачи и объединяю их в одну систему: подготовка данных, выполнение, контроль результата.'],
@@ -311,12 +332,12 @@ ru:{nav:['Проекты','Услуги','Порядок работы','Прод
  steps:[['Диагностика','Определяем задачу, критерий результата и узкие места процесса. Критерий фиксируется до начала работ.'],['Пилот','Реализация на ограниченном участке и реальных данных. Подход проверяется до вложений в полную систему.'],['Разработка и внедрение','Построение системы, запуск, обучение команды, передача документации. Дальше система работает без моего участия.']],
  sb4:'связь',st4:'Рассматриваю проекты, в которых результат должен быть проверяемым',sa4:'Практику и разборы задач публикую в своём канале.',b4:'Написать в Telegram',
  ll:['telegram','канал','linkedin','instagram'],foot:'2026, Viking Labs · Тохиржон Ирисбоев · Ташкент'},
-uz:{nav:['Loyihalar','Xizmatlar','Ish tartibi','Mahsulotlar','Aloqa'],navcta:'Bog‘lanish',
- badge:'AI Engineer & Systems Architect · Toshkent',h1:'Tohirjon Irisboyev\nBiznes uchun AI tizimlarni loyihalayman va joriy qilaman',
- lead:'Jarayonlarni avtomatlashtirish, botlar, agentlar, o‘qitish. O‘n ikkita tizim quyida ish jarayonida ko‘rsatilgan.',
- b1:'Loyihani muhokama qilish',b2:'Xizmatlar va narxlar',note:'Tizim oynalari rus tilida ko‘rsatilgan.',prev:'Oldingi loyiha',next:'Keyingi loyiha',
- sb1:'xizmatlar',st1:'Qo‘lda bajariladigan jarayonlar va ekspertizani natijasi tekshiriladigan AI tizimlarga o‘tkazaman',
- sa1:'Biznes uchun natija: ishlar tezroq bajariladi, sifat aniq bir xodimga bog‘liq bo‘lmaydi, har bir natijani dastlabki ma’lumotdan tasdiqqacha kuzatish mumkin.',
+uz:{nav:['Xizmatlar','Loyihalar','Ish tartibi','Mahsulotlar','Aloqa'],navcta:'Bog‘lanish',
+ badge:'AI Engineer & Systems Architect · Toshkent',h1:'Tohirjon Irisboyev · Viking Labs\nBiznesingizdagi takroriy ishlarni AI yordamida avtomatlashtiraman',
+ lead:'Mijozlar murojaatlari, hisobotlar, hujjatlar, xodimlarni o‘qitish.',ex:'Ishlardan namunalar',lt:'Vazifa',ls:'Yechim',
+ b1:'Vazifani muhokama qilish',b2:'Namunalarni ko‘rish',note:'Tizim oynalari rus tilida ko‘rsatilgan.',prev:'Oldingi loyiha',next:'Keyingi loyiha',
+ sb1:'xizmatlar',st1:'Nimada yordam bera olaman',
+ sa1:'',
  svc:[['Jarayonlarni avtomatlashtirish','Amaldagi jarayonni o‘rganaman va takrorlanadigan amallarni AIga o‘tkazaman. Qarorlarni xodimlar qabul qiladi, odatiy ishni tizim bajaradi.'],
   ['Ishni optimallashtirish','Mavjud jarayonni qayta qurmasdan tezlashtiraman: vaqt qayerda yo‘qotilayotganini topaman va jamoa vazifalariga mos vositalarni tanlayman.'],
   ['Agentlar va agent tizimlari','Amaliy vazifalar uchun agentlar yarataman va ularni yagona tizimga birlashtiraman: ma’lumot tayyorlash, bajarish, natijani nazorat qilish.'],
@@ -334,12 +355,12 @@ uz:{nav:['Loyihalar','Xizmatlar','Ish tartibi','Mahsulotlar','Aloqa'],navcta:'Bo
  steps:[['Diagnostika','Vazifani, natija mezonini va jarayondagi tor joylarni aniqlaymiz. Mezon ish boshlanishidan oldin belgilanadi.'],['Sinov','Cheklangan uchastkada va haqiqiy ma’lumotlarda amalga oshiriladi. Yondashuv to‘liq tizimga sarmoya kiritishdan oldin tekshiriladi.'],['Ishlab chiqish va joriy etish','Tizimni qurish, ishga tushirish, jamoani o‘qitish, hujjatlarni topshirish. Shundan keyin tizim mening ishtirokimsiz ishlaydi.']],
  sb4:'aloqa',st4:'Natijasini tekshirish mumkin bo‘lgan loyihalarni ko‘rib chiqaman',sa4:'Amaliyot va vazifalar tahlilini kanalimda e’lon qilaman.',b4:'Telegramda yozish',
  ll:['telegram','kanal','linkedin','instagram'],foot:'2026, Viking Labs · Tohirjon Irisboyev · Toshkent'},
-en:{nav:['Projects','Services','Process','Products','Contact'],navcta:'Contact me',
- badge:'AI Engineer & Systems Architect · Tashkent',h1:'Tokhirjon Irisboev\nI design and deploy AI systems for business',
- lead:'Process automation, bots, agents, training. Twelve systems are shown at work below.',
- b1:'Discuss a project',b2:'Services and prices',note:'System screens are shown in Russian.',prev:'Previous project',next:'Next project',
- sb1:'services',st1:'I move manual processes and expertise to AI, with results you can verify',
- sa1:'What the business gets: work is done faster, quality does not depend on a particular person, and every result can be traced from source data to confirmation.',
+en:{nav:['Services','Projects','Process','Products','Contact'],navcta:'Contact me',
+ badge:'AI Engineer & Systems Architect · Tashkent',h1:'Tokhirjon Irisboev · Viking Labs\nI automate routine work in your business with AI',
+ lead:'Customer requests, reports, documents, staff training.',ex:'Examples of work',lt:'Problem',ls:'Solution',
+ b1:'Discuss a task',b2:'See examples',note:'System screens are shown in Russian.',prev:'Previous project',next:'Next project',
+ sb1:'services',st1:'How I can help',
+ sa1:'',
  svc:[['Process automation','I study the current process and move repetitive operations to AI. People make the decisions; the system does the routine.'],
   ['Workflow optimisation','I speed up an existing process without rebuilding it: I find where time is lost and choose tools for the team’s tasks.'],
   ['Agents and agent systems','I build agents for practical tasks and join them into one system: data preparation, execution, result control.'],
@@ -359,7 +380,7 @@ en:{nav:['Projects','Services','Process','Products','Contact'],navcta:'Contact m
  ll:['telegram','channel','linkedin','instagram'],foot:'2026, Viking Labs · Tokhirjon Irisboev · Tashkent'}
 };
 var LINKS=[['@takhatheviking','https://t.me/takhatheviking'],['Viking notes','https://t.me/+1PeOUFs6EFUyMzAy'],['Tokhirjon Irisboev','https://www.linkedin.com/in/tokhirjon-irisboev-75466a338/'],['takhatheviking','https://instagram.com/takhatheviking']];
-var HREF=['#projects','#services','#process','#products','#contact'];
+var HREF=['#services','#projects','#process','#products','#contact'];
 /* маленькие анимированные значки услуг */
 var ICO=[
  '<g class="a-rot"><path d="M5 12a7 7 0 0 1 12.2-4.7"/><path d="M17.6 3.4v4.2h-4.2"/><path d="M19 12a7 7 0 0 1-12.2 4.7"/><path d="M6.4 20.6v-4.2h4.2"/></g>',
@@ -434,9 +455,8 @@ function paintText(){
 }
 function meta(){
   var p=P[cur],s=STAT[p[4]];
-  $('pcat').textContent=CATS[lang][p[3]];
   $('pst').className='st '+s.c;$('pst').lastChild.textContent=s[lang];
-  $('ptitle').textContent=p[5][lang][0];$('pben').textContent=p[5][lang][1];
+  $('ptitle').textContent=p[5][lang][0];var dd=D[p[0]][lang];$('ptask').textContent=dd[0];$('psol').textContent=dd[1];
   $('pnum').textContent=('0'+(cur+1)).slice(-2)+' / '+P.length;
 }
 
@@ -449,19 +469,20 @@ var frames=track.querySelectorAll('iframe');
 var CSSFX='html.ms .stage,html.fx .stage{max-width:none;padding:0;margin:0}html.fx,html.fx body,html.fx .stage{height:100%}html.fx body{overflow:hidden}html.fx .win{height:100%;display:flex;flex-direction:column;box-shadow:none;position:relative}html.fx .win>*{flex:none}html.fx .win>.body{flex:1 1 auto;min-height:0;overflow:hidden}html.fx .win.cut::after{content:"";position:absolute;left:1px;right:1px;bottom:var(--fh,42px);height:72px;background:linear-gradient(180deg,rgba(17,19,22,0),#111316);pointer-events:none}';
 /* на телефоне окно целиком помещается на экран под шапкой; высота считается один раз на ширину */
 var phH=0,phW=0;
-function boxWH(){var w=vp.clientWidth;if(w>=700)return [w,Math.round(w*.56)];
-  if(w!==phW){phW=w;phH=Math.max(500,Math.min(640,window.innerHeight-86))}return [w,phH]}
+function isPh(){return window.innerWidth<=720}
+function boxWH(){var w=vp.clientWidth;if(!isPh())return [w,Math.round(w*.62)];
+  if(w!==phW){phW=w;phH=Math.max(400,Math.min(600,window.innerHeight-266))}return [w,phH]}
 function setH(){vp.style.height=boxWH()[1]+'px'}
 function fit(i){
   try{var f=frames[i],d=f.contentDocument;if(!d||!d.body)return;var win=d.querySelector('.win');if(!win)return;
     var b=boxWH(),W=b[0],H=b[1],r=d.documentElement;
     if(!d.getElementById('fx')){var st=d.createElement('style');st.id='fx';st.textContent=CSSFX;d.head.appendChild(st);r.style.background='transparent';d.body.style.background='transparent'}
     r.classList.remove('fx');r.classList.add('ms');win.classList.remove('cut');
-    var lo=W<700?Math.round(W/.92):880,hi=W<700?Math.round(W/.62):1700,L=lo,ok=false,bd=d.querySelector('.win>.body'),nh=0;if(bd)bd.style.paddingTop=bd.style.paddingLeft=bd.style.paddingRight='';
+    var lo=isPh()?Math.round(W/.92):880,hi=isPh()?Math.round(W/.62):1700,L=lo,ok=false,bd=d.querySelector('.win>.body'),nh=0;if(bd)bd.style.paddingTop=bd.style.paddingLeft=bd.style.paddingRight='';
     for(;L<=hi;L+=20){f.style.width=L+'px';void f.offsetWidth;nh=win.offsetHeight;if(nh<=H*L/W){ok=true;break}}
     if(!ok){
       /* содержимое, которое растёт вместе с шириной, сужается полями */
-      var Ls=W<700?[hi]:[1040,1200,1400,1700],p0=bd?parseFloat(d.defaultView.getComputedStyle(bd).paddingLeft):0,k,pp;
+      var Ls=isPh()?[hi]:[1040,1200,1400,1700],p0=bd?parseFloat(d.defaultView.getComputedStyle(bd).paddingLeft):0,k,pp;
       for(k=0;k<Ls.length&&!ok&&bd;k++){L=Ls[k];f.style.width=L+'px';void f.offsetWidth;
         for(pp=10;pp<L*.2;pp+=10){bd.style.paddingLeft=bd.style.paddingRight=(p0+pp)+'px';nh=win.offsetHeight;if(nh<=H*L/W){ok=true;break}}
         if(!ok)bd.style.paddingLeft=bd.style.paddingRight=''}
